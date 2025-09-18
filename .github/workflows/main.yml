@@ -1,14 +1,16 @@
 name: Deploy to GitHub Pages
-
 on:
   push:
-    branches: [ main ]   # change to master if your default branch is master
+    branches: [ main ]     # or master
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+env:
+  WORKDIR: "./Hadagasma/event-planner-firebase"           # <-- change to your subfolder: ./event-planner-firebase, ./frontend, etc.
 
 jobs:
   build:
@@ -18,12 +20,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
-      # Set base path so Vite works under /<repo-name>/
+      - name: Show structure (debug)
+        run: |
+          pwd
+          ls -la
+          ls -la $WORKDIR
+      - run: npm ci
+        working-directory: ${{ env.WORKDIR }}
       - run: VITE_BASE=/${{ github.event.repository.name }}/ npm run build
+        working-directory: ${{ env.WORKDIR }}
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: ${{ env.WORKDIR }}/dist
   deploy:
     needs: build
     runs-on: ubuntu-latest

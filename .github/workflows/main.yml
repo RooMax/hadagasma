@@ -10,7 +10,7 @@ permissions:
   id-token: write
 
 env:
-  WORKDIR: "./Hadagasma/event-planner-firebase"           # <-- change to your subfolder: ./event-planner-firebase, ./frontend, etc.
+  WORKDIR: "./event-planner-firebase"           # <-- change to your subfolder: ./event-planner-firebase, ./frontend, etc.
 
 jobs:
   build:

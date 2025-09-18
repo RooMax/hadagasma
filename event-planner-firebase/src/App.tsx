@@ -67,54 +67,54 @@ export default function App() {
     let unsubTasks: (() => void) | undefined
     let unsubTeam: (() => void) | undefined
 
-    ;(async () => {
-      // Ensure project doc
-      await setDoc(
-        doc(db, 'projects', PROJECT_ID),
-        { name: 'Auric Lanka – Event Planner' },
-        { merge: true }
-      )
+      ; (async () => {
+        // Ensure project doc
+        await setDoc(
+          doc(db, 'projects', PROJECT_ID),
+          { name: 'Auric Lanka – Event Planner' },
+          { merge: true }
+        )
 
-      // Seed team if empty (YOUR team)
-      const teamCol = collection(db, 'projects', PROJECT_ID, 'team')
-      const snap = await getDocs(teamCol)
-      if (snap.empty) {
-        const defaultTeam: Member[] = [
-          { id: 'rusiru',    name: 'Rusiru',    initials: 'RK' },
-          { id: 'rico',      name: 'Rico',      initials: 'RI' },
-          { id: 'sameera',   name: 'Sameera',   initials: 'SA' },
-          { id: 'bhashitha', name: 'Bhashitha', initials: 'BH' },
-          { id: 'lakshi',    name: 'Lakshi',    initials: 'LA' },
-          { id: 'mb',        name: 'MB',        initials: 'MB' },
-        ]
-        await Promise.all(defaultTeam.map((m) => setDoc(doc(teamCol, m.id), m, { merge: true })))
-      }
+        // Seed team if empty (YOUR team)
+        const teamCol = collection(db, 'projects', PROJECT_ID, 'team')
+        const snap = await getDocs(teamCol)
+        if (snap.empty) {
+          const defaultTeam: Member[] = [
+            { id: 'rusiru', name: 'Rusiru', initials: 'RK' },
+            { id: 'rico', name: 'Rico', initials: 'RI' },
+            { id: 'sameera', name: 'Sameera', initials: 'SA' },
+            { id: 'bhashitha', name: 'Bhashitha', initials: 'BH' },
+            { id: 'lakshi', name: 'Lakshi', initials: 'LA' },
+            { id: 'mb', name: 'MB', initials: 'MB' },
+          ]
+          await Promise.all(defaultTeam.map((m) => setDoc(doc(teamCol, m.id), m, { merge: true })))
+        }
 
-      // Subscribe team
-      unsubTeam = onSnapshot(collection(db, 'projects', PROJECT_ID, 'team'), (qs) => {
-        const members: Member[] = qs.docs.map((d) => d.data() as Member)
-        setTeam(members)
-      })
-
-      // Subscribe tasks (ordered by createdAt)
-      const tasksQ = query(collection(db, 'projects', PROJECT_ID, 'tasks'), orderBy('createdAt', 'asc'))
-      unsubTasks = onSnapshot(tasksQ, (qs) => {
-        const list: Task[] = qs.docs.map((d) => {
-          const data = d.data() as DocumentData
-          return {
-            id: d.id,
-            title: data.title || '',
-            notes: data.notes || '',
-            assignees: (data.assignees || []) as string[],
-            subtasks: (data.subtasks || []) as Subtask[],
-            createdAt: data.createdAt,
-            dueDate: (data.dueDate ?? null) as Timestamp | null,
-          }
+        // Subscribe team
+        unsubTeam = onSnapshot(collection(db, 'projects', PROJECT_ID, 'team'), (qs) => {
+          const members: Member[] = qs.docs.map((d) => d.data() as Member)
+          setTeam(members)
         })
-        setTasks(list)
-        setLoading(false)
-      })
-    })()
+
+        // Subscribe tasks (ordered by createdAt)
+        const tasksQ = query(collection(db, 'projects', PROJECT_ID, 'tasks'), orderBy('createdAt', 'asc'))
+        unsubTasks = onSnapshot(tasksQ, (qs) => {
+          const list: Task[] = qs.docs.map((d) => {
+            const data = d.data() as DocumentData
+            return {
+              id: d.id,
+              title: data.title || '',
+              notes: data.notes || '',
+              assignees: (data.assignees || []) as string[],
+              subtasks: (data.subtasks || []) as Subtask[],
+              createdAt: data.createdAt,
+              dueDate: (data.dueDate ?? null) as Timestamp | null,
+            }
+          })
+          setTasks(list)
+          setLoading(false)
+        })
+      })()
 
     return () => {
       if (unsubTasks) unsubTasks()
@@ -135,7 +135,7 @@ export default function App() {
   const taskStatus = (t: Task) => {
     const p = computeProgress(t)
     if (p === 100) return { label: 'Done', tone: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' }
-    if (p > 0)   return { label: 'In Progress', tone: 'bg-amber-500/15 text-amber-400 border-amber-500/30' }
+    if (p > 0) return { label: 'In Progress', tone: 'bg-amber-500/15 text-amber-400 border-amber-500/30' }
     return { label: 'Not Started', tone: 'bg-slate-500/15 text-slate-300 border-slate-500/30' }
   }
 
@@ -147,7 +147,7 @@ export default function App() {
     if (!ts) return null
     const d = ts.toDate()
     const today = new Date()
-    d.setHours(0,0,0,0); today.setHours(0,0,0,0)
+    d.setHours(0, 0, 0, 0); today.setHours(0, 0, 0, 0)
     return Math.ceil((d.getTime() - today.getTime()) / 86400000)
   }
 
@@ -158,7 +158,7 @@ export default function App() {
     })
   }
 
-  const inDays = (n: number) => Timestamp.fromDate(new Date(Date.now() + n*86400000))
+  const inDays = (n: number) => Timestamp.fromDate(new Date(Date.now() + n * 86400000))
 
   const filteredTasks = useMemo(() => {
     const q = filter.trim().toLowerCase()
@@ -231,10 +231,10 @@ export default function App() {
       notes: 'Content + sponsors outreach',
       assignees: ['rusiru'],
       subtasks: [
-        { id: 'fb',       title: 'Post promo video on Facebook', done: false },
-        { id: 'tiktok',   title: 'Post vertical clip on TikTok', done: false },
-        { id: 'ig',       title: 'Post carousel on Instagram',   done: false },
-        { id: 'sponsors', title: 'Meeting with Sponsors',        done: false },
+        { id: 'fb', title: 'Post promo video on Facebook', done: false },
+        { id: 'tiktok', title: 'Post vertical clip on TikTok', done: false },
+        { id: 'ig', title: 'Post carousel on Instagram', done: false },
+        { id: 'sponsors', title: 'Meeting with Sponsors', done: false },
       ],
       createdAt: serverTimestamp(),
       dueDate: inDays(7),
@@ -244,9 +244,9 @@ export default function App() {
       notes: 'Lighting, sound check, run sheet',
       assignees: ['sameera'],
       subtasks: [
-        { id: 'av',     title: 'Confirm AV vendor',        done: true  },
-        { id: 'lights', title: 'Lighting plot draft',      done: false },
-        { id: 'sound',  title: 'Band soundcheck schedule', done: false },
+        { id: 'av', title: 'Confirm AV vendor', done: true },
+        { id: 'lights', title: 'Lighting plot draft', done: false },
+        { id: 'sound', title: 'Band soundcheck schedule', done: false },
       ],
       createdAt: serverTimestamp(),
       dueDate: inDays(2),
@@ -320,9 +320,16 @@ export default function App() {
       <header className="sticky top-0 z-20 border-b border-white/10 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/70">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-400 to-emerald-400 grid place-items-center font-bold text-neutral-900">ALE</div>
+            {/* <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-400 to-emerald-400 grid place-items-center font-bold text-neutral-900">ALE</div> */}
+            <img
+  src={import.meta.env.BASE_URL + 'hadagasma-logo.jpg'}
+  alt="HADAGASMA"
+  className="w-10 h-10 rounded-xl object-cover border border-white/10 shadow"
+  loading="eager"
+/>
+
             <div>
-              <h1 className="text-lg font-semibold leading-tight">HADAGASMA – Planner</h1>
+              <h1 className="text-lg font-semibold leading-tight">HADAGASMA UNPLUGGED CONCERT - PLANNER</h1>
               <p className="text-xs text-neutral-400">Drag teammates onto tasks • Progress + Deadlines</p>
             </div>
           </div>
@@ -362,13 +369,13 @@ export default function App() {
               className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/40"
             />
             <button
-  onClick={resetDemo}
-  className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10 disabled:opacity-50"
-  disabled={!user || !ENABLE_RESET}
-  title={ENABLE_RESET ? "Reset demo" : "Disabled in production"}
->
-  Reset demo
-</button>
+              onClick={resetDemo}
+              className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm hover:bg-white/10 disabled:opacity-50"
+              disabled={!user || !ENABLE_RESET}
+              title={ENABLE_RESET ? "Reset demo" : "Disabled in production"}
+            >
+              Reset demo
+            </button>
           </div>
 
           {loading && (

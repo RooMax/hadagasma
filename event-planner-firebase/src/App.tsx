@@ -252,6 +252,7 @@ export default function App() {
             <div>
               <h1 className="text-lg font-semibold leading-tight">HADAGASMA – Planner</h1>
               <p className="text-xs text-neutral-400">Drag teammates onto tasks • Progress auto-updates</p>
+              <p className="text-xs text-neutral-400"></p>
             </div>
           </div>
           <SignInControls />

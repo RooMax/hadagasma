@@ -502,8 +502,7 @@ export default function App() {
       {/* Footer */}
       <footer className="max-w-6xl mx-auto px-4 pb-10 text-neutral-500 text-xs">
         <div className="mt-6 border-t border-white/10 pt-4 flex flex-wrap items-center justify-between gap-2">
-          <span>Firebase: Auth + Firestore realtime • Drag-and-drop assignees • Deadlines • Auto progress</span>
-          <span>Next: Kanban, comments, roles, notifications</span>
+          <span>Powered by Auric Innovations</span>
         </div>
       </footer>
     </div>
